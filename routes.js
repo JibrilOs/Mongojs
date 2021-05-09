@@ -37,4 +37,17 @@ router.delete("/movies", async (req, res) => {
     }
   });
 })
+
+// Update movie by id
+router.put("/movies/:id", async (req, res) => {
+  await Movie.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}, (err, result) => { 
+    if (err){ 
+      return res.status(500).json({ message: err.message });
+    } 
+    else{ 
+      res.status(200).json({ result });
+    } 
+  }); 
+})
+
 module.exports = router;
