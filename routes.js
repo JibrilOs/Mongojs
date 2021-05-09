@@ -1,53 +1,57 @@
 const express = require("express");
 const router = express.Router();
-const Movie = require("./models/movie");
+const Car = require("./models/cars");
 
-// Fetch all movies
-router.get("/movies", async (req, res) => {
+// Fetch all cars
+router.get("/cars", async (req, res) => {
   try {
-    const movies = await Movie.find();
-    res.send(movies);
+    const cars = await Car.find();
+    res.send(cars);
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 });
-// Add movie
-router.post("/movies", async (req, res) => {
-  const movie = new Movie({
-    title: req.body.title,
-    director: req.body.director,
-    year: req.body.year
+// Add car
+router.post("/cars", async (req, res) => {
+  const car = new Car({
+    brand: req.body.brand,
+    model: req.body.model,
+    color: req.body.color,
+    year: req.body.year,
   });
 
   try {
-    const newMovie = await movie.save();
-    res.status(201).json({ newMovie });
-  } catch(err) {
+    const newCar = await car.save();
+    res.status(201).json({ newCar });
+  } catch (err) {
     return res.status(500).json({ message: err.message });
   }
-})
-// Delete movie by title
-router.delete("/movies", async (req, res) => {
-  await Movie.deleteOne({title: req.body.title}, (err, result) => {
+});
+// Delete car by title
+router.delete("/cars", async (req, res) => {
+  await Car.findByIdAndDelete( req.body.id , (err, result) => {
     if (err) {
       return res.status(500).json({ message: err.message });
-    }
-    else {
+    } else {
       res.status(200).json(result);
     }
   });
-})
+});
 
-// Update movie by id
-router.put("/movies/:id", async (req, res) => {
-  await Movie.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}, (err, result) => { 
-    if (err){ 
-      return res.status(500).json({ message: err.message });
-    } 
-    else{ 
-      res.status(200).json({ result });
-    } 
-  }); 
-})
+// Update car by id
+router.put("/cars/:id", async (req, res) => {
+  await Car.findOneAndUpdate(
+    { _id: req.params.id },
+    req.body,
+    { new: true },
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({ message: err.message });
+      } else {
+        res.status(200).json({ result });
+      }
+    }
+  );
+});
 
 module.exports = router;
